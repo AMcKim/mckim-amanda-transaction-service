@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface CustomerRepository {
 
-    public List<Customer> getCustomers() throws ParseException;
+    List<Customer> getCustomers() throws ParseException;
 }

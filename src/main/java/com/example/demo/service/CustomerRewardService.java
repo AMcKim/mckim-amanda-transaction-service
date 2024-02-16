@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 import com.example.demo.models.Customer;
 import com.example.demo.models.Transaction;
+import com.example.demo.repository.CustomerRepository;
 import com.example.demo.repository.CustomerRepositoryImpl;
 import com.example.demo.views.CustomerView;
 import com.example.demo.views.TransactionView;
@@ -16,7 +17,7 @@ import java.util.stream.Collectors;
 @Service
 public class CustomerRewardService {
 
-    private final CustomerRepositoryImpl customerRepository;
+    private final CustomerRepository customerRepository;
 
     public CustomerRewardService() {
         this.customerRepository = new CustomerRepositoryImpl();
