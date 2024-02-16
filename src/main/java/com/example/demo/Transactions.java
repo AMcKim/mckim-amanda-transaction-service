@@ -35,7 +35,7 @@ import java.util.List;
 // Assumptions
 
 // Create a GET endpoint to return a list of customers, containing their transactions per month, rewards per transaction and rewards per month
-// Fetched data will contain customer and transaction data from a three-month period.  Filtering will be handled by data access.
+// Fetched data will contain customer and transaction data from a three-month period.  Filtering for the three-month period would be handled by data access.
 // Can treat transaction value as an integer for POC
 
 
@@ -47,16 +47,7 @@ public class Transactions {
 		SpringApplication.run(Transactions.class, args);
 	}
 
-	private CustomerRewardService customerRewardService = new CustomerRewardService();
-
-//	public class CustomerTransactions(CustomerRepository customerRepository) {
-//		this.customer
-//	}
-
-//	@GetMapping("/greeting")
-//	public String greeting() {
-//		return "hello";
-//	}
+	private final CustomerRewardService customerRewardService = new CustomerRewardService();
 
 	@GetMapping("/") // todo: refactor this to controller class
 	public List<CustomerView> getCustomerRewards() {
