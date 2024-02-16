@@ -25,14 +25,8 @@ public class CustomerRewardServiceTest {
     private final CustomerRepository customerRepository;
     private CustomerRewardService testObject;
 
-    public CustomerRewardServiceTest(CustomerRepository customerRepository) {
-
-        this.customerRepository = new CustomerRepository() {
-            @Override
-            public List<Customer> getCustomers() throws ParseException {
-                return null;
-            }
-        };
+    public CustomerRewardServiceTest(CustomerRepository customerRepository1) {
+        this.customerRepository = customerRepository1;
         this.testObject = new CustomerRewardService();
     }
     private List<Customer> createMockCustomerList() throws ParseException {
