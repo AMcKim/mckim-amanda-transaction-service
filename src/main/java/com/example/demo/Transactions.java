@@ -1,7 +1,7 @@
 package com.example.demo;
 
-import com.example.demo.models.Customer;
-import com.example.demo.repository.CustomerRepository;
+import com.example.demo.service.CustomerRewardService;
+import com.example.demo.views.CustomerView;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,7 +22,7 @@ import java.util.List;
 //
 //		·       Solve using Spring Boot
 //
-//·       Create a RESTful endpoint
+//·       Create a REST endpoint
 //
 //·       Make up a data set to best demonstrate your solution
 //
@@ -36,7 +36,7 @@ import java.util.List;
 
 // Create a GET endpoint to return a list of customers, containing their transactions per month, rewards per transaction and rewards per month
 // Fetched data will contain customer and transaction data from a three-month period.  Filtering will be handled by data access.
-// Can treat transaction value as an integer
+// Can treat transaction value as an integer for POC
 
 
 @SpringBootApplication
@@ -47,7 +47,7 @@ public class Transactions {
 		SpringApplication.run(Transactions.class, args);
 	}
 
-	private CustomerRepository customerRepository = new CustomerRepository();
+	private CustomerRewardService customerRewardService = new CustomerRewardService();
 
 //	public class CustomerTransactions(CustomerRepository customerRepository) {
 //		this.customer
@@ -59,11 +59,11 @@ public class Transactions {
 //	}
 
 	@GetMapping("/") // todo: refactor this to controller class
-	public List<Customer> getCustomerList() { // todo: update to return CustomerViews
+	public List<CustomerView> getCustomerRewards() {
 		try {
-			return customerRepository.getCustomers();
+			return customerRewardService.getCustomerRewards();
 		} catch (ParseException ex) {
-			return (List<Customer>) ex;
+			return null; // todo: replace with exception response
 		}
 
 	}
