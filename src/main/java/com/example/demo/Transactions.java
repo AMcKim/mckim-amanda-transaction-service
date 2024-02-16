@@ -1,9 +1,14 @@
 package com.example.demo;
 
+import com.example.demo.models.Customer;
+import com.example.demo.repository.CustomerRepository;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.text.ParseException;
+import java.util.List;
 
 //WebAPI
 //
@@ -13,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 //
 //		(e.g. a $120 purchase = 2x$20 + 1x$50 = 90 points).
 //
-//Given a record of every transaction during a three month period, calculate the reward points earned for each customer per month and total.
+//Given a record of every transaction during a three-month period, calculate the reward points earned for each customer per month and total.
 //
 //		·       Solve using Spring Boot
 //
@@ -30,7 +35,7 @@ import org.springframework.web.bind.annotation.RestController;
 // Assumptions
 
 // Create a GET endpoint to return a list of customers, containing their transactions per month, rewards per transaction and rewards per month
-// Fetched data will contain customer and transaction data from a three-month period.
+// Fetched data will contain customer and transaction data from a three-month period.  Filtering will be handled by data access.
 // Can treat transaction value as an integer
 
 
@@ -42,8 +47,24 @@ public class Transactions {
 		SpringApplication.run(Transactions.class, args);
 	}
 
-	@GetMapping("/greeting")
-	public String greeting() {
-		return "hello";
+	private CustomerRepository customerRepository = new CustomerRepository();
+
+//	public class CustomerTransactions(CustomerRepository customerRepository) {
+//		this.customer
+//	}
+
+//	@GetMapping("/greeting")
+//	public String greeting() {
+//		return "hello";
+//	}
+
+	@GetMapping("/") // todo: refactor this to controller class
+	public List<Customer> getCustomerList() { // todo: update to return CustomerViews
+		try {
+			return customerRepository.getCustomers();
+		} catch (ParseException ex) {
+			return (List<Customer>) ex;
+		}
+
 	}
 }
