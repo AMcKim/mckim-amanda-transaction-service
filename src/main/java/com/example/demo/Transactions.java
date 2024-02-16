@@ -49,12 +49,16 @@ public class Transactions {
 
 	private final CustomerRewardService customerRewardService = new CustomerRewardService();
 
-	@GetMapping("/") // todo: refactor this to controller class
+	@GetMapping("/") // todo: should be refactored to controller class
 	public List<CustomerView> getCustomerRewards() {
 		try {
 			return customerRewardService.getCustomerRewards();
-		} catch (ParseException ex) {
-			return null; // todo: replace with exception response
+		} catch (ParseException ex) {// todo: needs appropriate http responses
+			System.out.println(ex);
+			return null;
+		} catch (Exception ex) {
+			System.out.println(ex);
+			return null;
 		}
 
 	}

@@ -2,7 +2,7 @@ package com.example.demo.service;
 
 import com.example.demo.models.Customer;
 import com.example.demo.models.Transaction;
-import com.example.demo.repository.CustomerRepository;
+import com.example.demo.repository.CustomerRepositoryImpl;
 import com.example.demo.views.CustomerView;
 import com.example.demo.views.TransactionView;
 import com.example.demo.views.TransactionsPerMonthView;
@@ -10,16 +10,16 @@ import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class CustomerRewardService {
 
-    private final CustomerRepository customerRepository;
+    private final CustomerRepositoryImpl customerRepository;
 
     public CustomerRewardService() {
-        this.customerRepository = new CustomerRepository();
+        this.customerRepository = new CustomerRepositoryImpl();
     }
 
     public List<CustomerView> getCustomerRewards() throws ParseException {
@@ -85,7 +85,7 @@ public class CustomerRewardService {
     private Integer getTransactionReward(Integer valueInDollars) {
         if(valueInDollars <= 50) { // values less than 50 receive no reward
             return 0;
-        } else if (valueInDollars > 100) {
+        } else if (valueInDollars > 100) { // values over 100 receive fifty for 51-100 and X2 for amount over 100
             Integer rewardForFiftyToOneHundred = 50;
             Integer rewardForOverOneHundred = (valueInDollars - 100) * 2;
             return rewardForFiftyToOneHundred + rewardForOverOneHundred;
@@ -95,19 +95,20 @@ public class CustomerRewardService {
     }
 
     private Integer getTotalRewardsForMonth(List<TransactionView> transactionViews) {
-        List<Integer> rewardsList = new ArrayList<>();
-        transactionViews.forEach(transactionView -> {
-            rewardsList.add(transactionView.getReward());
-        });
-
-        return rewardsList.stream().reduce(0, Integer::sum);
+        List<Integer> rewardsList = transactionViews.stream().map(TransactionView::getReward).collect(Collectors.toList());
+        return getSumFromList(rewardsList);
     }
 
     private Integer getTotalRewardsForCustomer(List<TransactionsPerMonthView> transactionsPerMonthViews) {
-        List<Integer> rewardList = Arrays.asList(
-                transactionsPerMonthViews.get(0).getTotalRewardsForMonth(),
-                transactionsPerMonthViews.get(1).getTotalRewardsForMonth(),
-                transactionsPerMonthViews.get(2).getTotalRewardsForMonth());
-      return rewardList.stream().reduce(0, Integer::sum);
+//        List<Integer> rewardList = Arrays.asList(
+//                transactionsPerMonthViews.get(0).getTotalRewardsForMonth(),
+//                transactionsPerMonthViews.get(1).getTotalRewardsForMonth(),
+//                transactionsPerMonthViews.get(2).getTotalRewardsForMonth());
+        List<Integer> rewardList = transactionsPerMonthViews.stream().map(TransactionsPerMonthView::getTotalRewardsForMonth).collect(Collectors.toList());
+        return getSumFromList(rewardList);
+    }
+
+    private Integer getSumFromList(List<Integer> rewardList) {
+        return rewardList.stream().reduce(0, Integer::sum);
     }
 }
