@@ -1,10 +1,11 @@
 package com.example.demo.models;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 public class Transaction {
     private String transactionId;
-    private Date transactionDate;
+    private String transactionDate;
     private Integer valueInDollars;
 
     public String getTransactionId() {
@@ -15,11 +16,15 @@ public class Transaction {
         this.transactionId = transactionId;
     }
 
-    public Date getTransactionDate() {
+    public String getTransactionDate() {
         return this.transactionDate;
     }
 
-    public void setTransactionDate(Date transactionDate) {
+//    public String getTransactionMonth() {
+//        return this.transactionDate.getMonth().toString();
+//    }
+
+    public void setTransactionDate(String transactionDate) {
         this.transactionDate = transactionDate;
     }
 

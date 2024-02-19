@@ -1,10 +1,11 @@
 package com.example.demo.views;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 public class TransactionView {
     private String transactionId;
-    private Date transactionDate;
+    private String transactionDate;
     private Integer valueInDollars;
 
     private Integer reward;
@@ -17,11 +18,11 @@ public class TransactionView {
         this.transactionId = transactionId;
     }
 
-    public Date getTransactionDate() {
+    public String getTransactionDate() {
         return this.transactionDate;
     }
 
-    public void setTransactionDate(Date transactionDate) {
+    public void setTransactionDate(String transactionDate) {
         this.transactionDate = transactionDate;
     }
 

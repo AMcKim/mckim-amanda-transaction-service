@@ -10,12 +10,15 @@ import com.example.demo.views.TransactionsPerMonthView;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.List;
+import java.time.Month;
+import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 public class CustomerRewardService {
+    DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     private final CustomerRepository customerRepository;
 
@@ -43,35 +46,29 @@ public class CustomerRewardService {
     private List<TransactionsPerMonthView> getCustomerTransactionsForMonth(List<Transaction> transactions) {
         List<TransactionsPerMonthView> transactionsPerMonthViews = new ArrayList<>();
 
-        TransactionsPerMonthView transactionsPerMonthViewNovember = new TransactionsPerMonthView();
-        transactionsPerMonthViewNovember.setMonth("November 2023");
-        transactionsPerMonthViewNovember.setTransactions(getTransactionsForMonth(transactions, 10));
-        transactionsPerMonthViewNovember.setTotalRewardsForMonth(getTotalRewardsForMonth(transactionsPerMonthViewNovember.getTransactions()));
-        transactionsPerMonthViews.add(transactionsPerMonthViewNovember);
 
-        TransactionsPerMonthView transactionsPerMonthViewDecember = new TransactionsPerMonthView();
-        transactionsPerMonthViewDecember.setMonth("December 2023");
-        transactionsPerMonthViewDecember.setTransactions(getTransactionsForMonth(transactions, 11));
-        transactionsPerMonthViewDecember.setTotalRewardsForMonth(getTotalRewardsForMonth(transactionsPerMonthViewDecember.getTransactions()));
-        transactionsPerMonthViews.add(transactionsPerMonthViewDecember);
+        Map<String, List<Transaction>> transactionsPerMonthMap = transactions
+                .stream()
+                .collect(Collectors.groupingBy(t -> String.valueOf(YearMonth.parse(t.getTransactionDate(), DATE_TIME_FORMATTER))));
 
-        TransactionsPerMonthView transactionsPerMonthViewJanuary = new TransactionsPerMonthView();
-        transactionsPerMonthViewJanuary.setMonth("January 2024");
-        transactionsPerMonthViewJanuary.setTransactions(getTransactionsForMonth(transactions, 0));
-        transactionsPerMonthViewJanuary.setTotalRewardsForMonth(getTotalRewardsForMonth(transactionsPerMonthViewJanuary.getTransactions()));
-        transactionsPerMonthViews.add(transactionsPerMonthViewJanuary);
+        SortedSet<String> keys = new TreeSet<>(transactionsPerMonthMap.keySet());
+
+        for (String key : keys) {
+            List<Transaction> transactionList = transactionsPerMonthMap.get(key);
+
+            TransactionsPerMonthView transactionsPerMonthView = new TransactionsPerMonthView();
+            transactionsPerMonthView.setMonth(key);
+            transactionsPerMonthView.setTransactions(getTransactionViews(transactionList));
+            transactionsPerMonthView.setTotalRewardsForMonth(getTotalRewardsForMonth(transactionsPerMonthView.getTransactions()));
+            transactionsPerMonthViews.add(transactionsPerMonthView);
+        }
 
         return transactionsPerMonthViews;
     }
 
-    private List<TransactionView> getTransactionsForMonth(List<Transaction> transactions, int month) {
-        List<Transaction> transactionsForMonth = transactions.stream().filter(transaction -> {
-            // todo: getMonth() is deprecated, replace with updated filtering
-            int transactionMonth = transaction.getTransactionDate().getMonth();
-            return transactionMonth == month;
-        }).toList();
+    private List<TransactionView> getTransactionViews(List<Transaction> transactions) {
         List<TransactionView> transactionViews = new ArrayList<>();
-        transactionsForMonth.forEach(transaction -> {
+        transactions.forEach(transaction -> {
             TransactionView transactionView = new TransactionView();
             transactionView.setTransactionId(transaction.getTransactionId());
             transactionView.setTransactionDate(transaction.getTransactionDate());
@@ -79,7 +76,7 @@ public class CustomerRewardService {
             transactionView.setReward(getTransactionReward(transaction.getValueInDollars()));
             transactionViews.add(transactionView);
         });
-        
+
         return transactionViews;
     }
     
